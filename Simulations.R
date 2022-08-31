@@ -8,13 +8,13 @@ library(mc2d)
 
 setwd(dirname(getActiveDocumentContext()$path))
 
-source("Functions_Rabies_Model.R") ##load predefined function and parameters
+source("Functions_Rabies_Model.R") 
 
 
 set.seed(1)
 nruns <- 1000
-betas <- runif(nruns,0.07, 0.09) #.5,1.5 #300 numbers between X and X #this is our beta range ie from .5 to 30
-inf.Radius <- runif(nruns,.15,.25) #.5, .8
+betas <- runif(nruns,0.07, 0.09) 
+inf.Radius <- runif(nruns,.15,.25) 
 
 cores = detectCores()
 cl <- makeCluster(cores[1]-1, type = "FORK")
@@ -30,7 +30,7 @@ prevalenceV6 <- foreach(i=1:nruns, .combine=cbind) %dopar%{
   sim$sizeM =  14
   
   sim$initialize() 
-  sim$burnin(7305) # 1825 4 year burn in
+  sim$burnin(7305) 
   prev <- tail(sim$outputs,1)[3]/sim$nDogs
   
   if (prev < 0.11 & prev > 0.09){
