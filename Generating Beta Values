@@ -1,0 +1,31 @@
+setwd(dirname(getActiveDocumentContext()$path))
+
+source("Functions_Rabies_Model.R")
+library(pryr)
+library(mc2d)
+
+set.seed(11)
+nruns <- 500
+betas <- runif(nruns, 0.09,0.12)
+inf.Radius <- runif(nruns, .15,.25)
+sim <- Simulation$new()
+Mlist <- list()
+for(i in 1:nruns){
+sim$beta = betas[i]
+sim$inf.Radius = inf.Radius[i]
+sim$nDogs = 1700
+sim$sizeM = 14
+sim$initialize()
+sim$burnin(1825)
+Mlist[[i]] <- sim$outputs
+}
+
+prevalence <-sapply(1:nruns, function(x) {tail(Mlist[[x]],1)[3]/sim$nDogs})
+
+hist(prevalence)
+
+IDs <- which(prevalence > 0.01 & prevalence < 0.03)
+
+betas[IDs]
+inf.Radius[IDs]
+plot(betas, prevalence)
